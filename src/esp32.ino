@@ -48,7 +48,7 @@ void loop()
   comInfo = Serial2.readString();
   if (comInfo.substring(0, 3) == "cm:") {
     // percentage based on max 50cm
-    distance = (comInfo.substring(3).toInt()) * 2;
+    distance = (comInfo.substring(3).toInt());
     Serial.println(distance);
     water_level = String(distance);
   }
