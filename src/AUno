@@ -16,9 +16,13 @@ void setup() {
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   pinMode(relay, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(interupt_pin_irrigate), irrigate_on, RISING);
   attachInterrupt(digitalPinToInterrupt(interupt_pin_irrigate), irrigate_low, FALLING);
   Serial.begin(9600);
+  digitalWrite(relay, HIGH);
+  delay(2000);
+  digitalWrite(relay, LOW);
 }
 
 void range_meassurement(){
@@ -30,15 +34,17 @@ void range_meassurement(){
   duration = pulseIn(echoPin, HIGH);
   distance = duration * 0.034 / 2;
   Serial.print("cm:");
-  Serial.print(distance); Serial.println(" ");
+  Serial.println(distance);
 }
 
 void irrigate_on() {
   digitalWrite(relay, HIGH);
+  digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void irrigate_low() {
   digitalWrite(relay, LOW);
+  digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void loop() {
