@@ -6,8 +6,6 @@
 // Setup
 #define RXp2 16
 #define TXp2 17
-const char Ultrasonik_Trigger = 5;
-const char Ultrasonik_Echo = 18; 
 String dirt_status;
 String water_level;
 String comInfo;
@@ -55,7 +53,7 @@ void loop()
   
   comInfo = Serial2.readString();
   if(comInfo.substring(0, 3) == "mp:") {
-    moisture_percentage = comInfo.substring(3, 5).toInt();
+    moisture_percentage = comInfo.substring(3).toInt();
   }
   if (moisture_percentage < 30) {
     dirt_status = "Dry";
