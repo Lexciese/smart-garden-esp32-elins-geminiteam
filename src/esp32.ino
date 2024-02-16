@@ -11,6 +11,7 @@ String water_level;
 String comInfo;
 const char interupt_pin_irrigate = 5;
 
+String S;
 int distance;
 int duration;
 int moisture_signal_pin = 35;
@@ -28,6 +29,7 @@ void setup()
 {
   Serial.begin(115200);
   Serial2.begin(9600, SERIAL_8N1, RXp2, TXp2); //from arduino
+  pinMode(interupt_pin_irrigate, OUTPUT);
 
   // Start Wifi
   WiFi.softAP(ssid, password);
@@ -46,14 +48,18 @@ void loop()
   comInfo = Serial2.readString();
   if (comInfo.substring(0, 3) == "cm:") {
     // percentage based on max 50cm
-    distance = (comInfo.substring(3).toInt());
+    S = comInfo.substring(3);
+    S.trim();
+    distance = S.toInt();
     Serial.println(distance);
     water_level = String(distance);
   }
   
   comInfo = Serial2.readString();
   if(comInfo.substring(0, 3) == "mp:") {
-    moisture_percentage = comInfo.substring(3).toInt();
+    S = comInfo.substring(3);
+    S.trim();
+    moisture_percentage = S.toInt();
   }
   if (moisture_percentage < 30) {
     dirt_status = "Dry";
@@ -160,7 +166,7 @@ String page_HTML() {
         <div>
             <h4>Water Tank Level</h4>
             <div id="water_level">
-                <progress value=")"; html+= water_level; html+= R"(" max="350"></progress>
+                <progress value=")"; html+= water_level; html+= R"(" max="400"></progress>
                 <label>)"; html+=water_level; html+=R"( cm</label>
             </div>
         </div>
