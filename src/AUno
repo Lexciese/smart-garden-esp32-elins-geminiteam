@@ -1,0 +1,59 @@
+#define RXp2 0
+#define TXp2 1
+int distance;
+int duration;
+int moisture_percentage;
+String dirt_status;
+long water_level;
+const char echoPin = 12;
+const char trigPin = 13;
+const int relay = 4;
+int moisture_signal_pin = A0;
+const int interupt_pin_irrigate = 2;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(relay, OUTPUT);
+  attachInterrupt(digitalPinToInterrupt(interupt_pin_irrigate), irrigate_on, RISING);
+  attachInterrupt(digitalPinToInterrupt(interupt_pin_irrigate), irrigate_low, FALLING);
+  Serial.begin(9600);
+}
+
+void range_meassurement(){
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+  Serial.print("cm:");
+  Serial.print(distance); Serial.println(" ");
+}
+
+void irrigate_on() {
+  digitalWrite(relay, HIGH);
+}
+
+void irrigate_low() {
+  digitalWrite(relay, LOW);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  range_meassurement();
+  digitalWrite(relay, LOW);
+
+  //Moisture Reading
+  moisture_percentage = 100 - ((analogRead(moisture_signal_pin)/1023.00) * 100 );
+  Serial.print("mp:");
+  Serial.println(moisture_percentage);
+  if (moisture_percentage < 30) {
+    digitalWrite(relay, HIGH);
+    delay(5000);
+    digitalWrite(relay, LOW);
+  }
+  delay(1000);
+}
